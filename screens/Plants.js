@@ -24,7 +24,7 @@ export default function PlantsScreen (props)  {
                 <Text style={styles.characteristics}>{item.characteristics}</Text>
                 <Text style={styles.quantity}> {item.quantity}шт</Text> 
             <TouchableHighlight style={styles.button} >
-                <Text style={styles.statusDig} onPress={} >Готово{item.statusDig}</Text> 
+                <Text style={styles.statusDig}  >Готово{item.statusDig}</Text> 
             </TouchableHighlight>
             </View>
             </TouchableHighlight>
