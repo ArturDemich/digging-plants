@@ -40,22 +40,26 @@ export default function OrdersScreen  (props) {
         }        
     })
           
-
+console.log(dataFilter)
     
     function renderOrders ({item}) {              
         
-        return (
+        return (           
                 <TouchableHighlight
                     onPress={() => props.navigation.navigate('Рослини',  { title: fild, data: dataFilter, clientName: item.nameClient })}
                     style={styles.rowFront}
                     underlayColor={'#AAA'}
                 >
+                
+               
                 <View style={styles.costLineWrapper}>
                     <Text style={styles.orderClient}>{item.nameClient}</Text>           
-                    <Text style={styles.orderShipment}>відправки: {item.dateShipment}</Text>
+                    <Text style={styles.orderShipment}>відправка: {item.dateShipment}</Text>
+                    <Text style={styles.orderShipment}>Статус: {item.status[2]}</Text>
                 
                 </View>
                 </TouchableHighlight>
+            
         )
     }
     

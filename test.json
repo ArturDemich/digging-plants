@@ -1,41 +1,36 @@
 {
-  "squadName": "Super hero squad",
-  "homeTown": "Metro City",
-  "formed": 2016,
-  "secretBase": "Super tower",
-  "active": true,
-  "members": [
+  "orders": [
     {
-      "name": "Molecule Man",
-      "age": 29,
-      "secretIdentity": "Dan Jukes",
-      "powers": [
-        "Radiation resistance",
-        "Turning tiny",
-        "Radiation blast"
+      "id": 1,
+      "nameClient": "Петров Іван",
+      "dateShipment": "31.03.2022",
+      "dateTransfer": "29.03.2022",
+      "status": ["готово", "в роботі", "нове"],
+      "orderItems": [
+        {
+          "id": 11,
+          "name": "Туя Смарагд",
+          "characteristics": "WRB,H180-200",
+          "quantity": 2,
+          "placing": "Барвінок",
+          "statusDig": false
+        },
+        {
+          "id": 22,
+          "name": "Туя Брабант",
+          "characteristics": "WRB,H180-200",
+          "quantity": 2,
+          "placing": "Перечин",
+          "statusDig": false
+        },
+        {
+          "id": 33,
+          "name": "Туя Колумна",
+          "characteristics": "WRB,H100-120, NIWAKI",
+          "quantity": 100,
+          "placing": "Перечин",
+          "statusDig": false
+        }
       ]
     },
-    {
-      "name": "Madame Uppercut",
-      "age": 39,
-      "secretIdentity": "Jane Wilson",
-      "powers": [
-        "Million tonne punch",
-        "Damage resistance",
-        "Superhuman reflexes"
-      ]
-    },
-    {
-      "name": "Eternal Flame",
-      "age": 1000000,
-      "secretIdentity": "Unknown",
-      "powers": [
-        "Immortality",
-        "Heat Immunity",
-        "Inferno",
-        "Teleportation",
-        "Interdimensional travel"
-      ]
     }
-  ]
-}

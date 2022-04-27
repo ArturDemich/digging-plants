@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { Text, StyleSheet, TouchableHighlight, View, FlatList} from 'react-native'
+import { Text, StyleSheet, TouchableHighlight, View, FlatList, Pressable, Modal, Alert, } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 
@@ -8,11 +8,13 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 export default function PlantsScreen (props)  {
 
     const [isSelected, setSelection] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false)
 
     const dataOrders = props.route.params.data
 
 
-    function renderPlants ({item}) {              
+    function renderPlants ({item}) { 
+
         return (
             <TouchableHighlight
                // onPress={() => props.navigation.navigate('Рослини',  { title: props.route.params.title, data: dataFilter })}
@@ -23,7 +25,7 @@ export default function PlantsScreen (props)  {
                 <Text style={styles.plantName}>{item.name}</Text>           
                 <Text style={styles.characteristics}>{item.characteristics}</Text>
                 <Text style={styles.quantity}> {item.quantity}шт</Text> 
-            <TouchableHighlight style={styles.button} >
+            <TouchableHighlight style={[styles.button, isSelected === true && styles.buttonPress]} onPress={(el) => setSelection(!isSelected) } >
                 <Text style={styles.statusDig}  >Готово{item.statusDig}</Text> 
             </TouchableHighlight>
             </View>
@@ -35,7 +37,6 @@ export default function PlantsScreen (props)  {
     const clientName = props.route.params.clientName
 
     const plantOrders = []
-   // let clientName
     
     dataOrders.filter(order => {     
         if (clientName == order.nameClient) {
@@ -43,25 +44,59 @@ export default function PlantsScreen (props)  {
             for (let i = 0; i < order.orderItems.length; i++) {
                 plantPlace = order.orderItems[i].placing           
                 if (plantPlace == fild ) {           
-                        return plantOrders.push(order.orderItems[i])
+                         plantOrders.push(order.orderItems[i])
                     } 
            }     
         }
            
     })
-   //console.log(dataOrders)
+   //console.log(plantOrders)
 
 
     return (
-        <SafeAreaView>         
+        <SafeAreaView style={styles.container}>    
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                    Alert.alert("Modal has been closed.");
+                    setModalVisible(!modalVisible);
+                }}
+            >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <Text style={styles.modalText}>Всі рослини викопані?</Text>
+                        <View style={styles.modalRow}>
+                            <Pressable
+                                style={ styles.buttonClose}
+                                onPress={() => setModalVisible(!modalVisible)}
+                            >
+                                <Text style={styles.textStyle}>Ні</Text>
+                            </Pressable>
+                            <Pressable
+                                style={styles.buttonModal }
+                                onPress={() => setSelection(!isSelected) ? true : setModalVisible(!modalVisible)}
+                            >
+                                <Text style={styles.textStyle}>Всі!</Text>
+                            </Pressable>
+                        </View>
+                        
+                    </View>
+                </View>
+            </Modal>  
+
+
             <Text style={styles.text}> Замовлення {props.route.params.clientName} з поля {props.route.params.title} </Text>
             <FlatList              
             data={plantOrders}
             renderItem={renderPlants}
-            keyExtractor={item => item.id.toString()}
-            
+            keyExtractor={item => item.id.toString()}         
             
             />
+            <Pressable style={styles.statusButton} onPress={() => setModalVisible(true)} >
+                <Text style={styles.textStatus} >Викопано! </Text> 
+            </Pressable>
         </SafeAreaView>
     )
 }
@@ -70,8 +105,8 @@ export default function PlantsScreen (props)  {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
         justifyContent: 'center',
+        marginBottom: 1,
     },
     text: {
         color: 'black',
@@ -80,7 +115,6 @@ const styles = StyleSheet.create({
         marginBottom: 14,
     },
     costLineWrapper: {
-        height: 50,
         flex: 1,
         flexDirection: 'row',
         
@@ -110,10 +144,34 @@ const styles = StyleSheet.create({
         margin: 2
 
     },
+    buttonPress: {
+        marginRight: 5,
+        borderRadius: 3,
+        textAlign: "center",
+        backgroundColor: "red",
+        minWidth: "10%",
+        textAlignVertical: 'center',
+        margin: 2
+    },
+    statusButton: {
+        borderRadius: 15,
+        backgroundColor: "green",
+        width: "35%",
+        minHeight: 40,
+        margin: 2,
+        alignItems: 'center',
+        alignSelf: 'center',  
+        justifyContent: 'center'
+        
+    },
+    textStatus: {
+        color: 'black',
+        fontSize: 18,
+    },
     characteristics: {
         height: 50,
         flex: 3,
-        textAlignVertical: 'center',
+        textAlignVertical: 'center',        
 
     },    
     quantity: {
@@ -136,6 +194,58 @@ const styles = StyleSheet.create({
         borderBottomColor: 'black',
         borderBottomWidth: 1,
         justifyContent: 'center',
-        height: 50,
+        height: 'auto',
+        margin: 1,
     },
+
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22
+      },
+    modalView: {
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5
+      },
+      modalRow: {
+        flexDirection: 'row',
+    
+      },
+      buttonModal: {
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2,
+        minWidth: 90,
+        backgroundColor: "#2196F3",
+      },
+      
+      buttonClose: {
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2,
+        minWidth: 70,
+        backgroundColor: "red",
+        marginEnd: 5,
+      },
+      textStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center"
+      },
+      modalText: {
+        marginBottom: 15,
+        textAlign: "center"
+      },
 })
