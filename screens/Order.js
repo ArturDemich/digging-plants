@@ -1,84 +1,50 @@
-import React, { useEffect, useState, useReducer } from 'react'
+import React from 'react'
 import {View, Text, StyleSheet, FlatList, TouchableHighlight} from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { useDispatch, useSelector } from 'react-redux'
+import { filterPlants } from '../state/actions'
 
-export default function OrdersScreen  (props) {
-    const [dataArray, setDataArray] = useState([])
-    const [isLoading, setIsLoading] = useState(false) 
-
-
-    const getOrders = async () => {
-        const URL = 'http://127.0.0.1:3000/orders'
-        setIsLoading(true)
-
-        try {
-         const res = await fetch('https://my-json-server.typicode.com/ArturDemich/plant-list-page/orders');
-         const json = await res.json();
-         setDataArray(json);
-       } catch (error) {
-         console.error(error);
-       } finally {
-        setIsLoading(false);
-       }
-     }
-   
-     useEffect(() => {
-        getOrders();
-     }, []); 
-
-
-
-    const fild = props.route.params.title  
-
-    const dataFilter = dataArray.filter(order => {        
-        let plantPlace 
-        for (let i = 0; i < order.orderItems.length; i++) {
-           plantPlace = order.orderItems[i].placing
-           if (plantPlace == fild ) {           
-                return true
-            } 
-        }        
-    })
-          
-console.log(dataFilter)
+export default function OrdersScreen  ({navigation, route}) {
     
-    function renderOrders ({item}) {              
-        
+    const fild = route.params.title  
+    const dataFilter = useSelector(state => state.filterOrder.filterOrders)
+    const dispatch = useDispatch()
+    // console.log(dataFilter)
+      
+
+    
+    function renderOrders ({item}) { 
         return (           
                 <TouchableHighlight
-                    onPress={() => props.navigation.navigate('Рослини',  { title: fild, data: dataFilter, clientName: item.nameClient })}
+                    onPress={() => {
+                        navigation.navigate('Рослини',  { title: fild, data: dataFilter, clientName: item.nameClient, })
+                        dispatch(filterPlants(dataFilter, fild, item.nameClient))
+                    }}
                     style={styles.rowFront}
                     underlayColor={'#AAA'}
-                >
-                
-               
-                <View style={styles.costLineWrapper}>
-                    <Text style={styles.orderClient}>{item.nameClient}</Text>           
-                    <Text style={styles.orderShipment}>відправка: {item.dateShipment}</Text>
-                    <Text style={styles.orderShipment}>Статус: {item.status[2]}</Text>
-                
-                </View>
-                </TouchableHighlight>
-            
+                >                              
+                    <View style={styles.costLineWrapper}>
+                        <Text style={styles.orderClient}>{item.nameClient}</Text>           
+                        <Text style={styles.orderShipment}>відправка: {item.dateShipment}</Text>
+                        <Text style={styles.orderShipment}>Статус: {item.status}</Text>                    
+                    </View>
+                </TouchableHighlight>            
         )
     }
     
-
+    
 
     
-    return (        
-        <SafeAreaView style={styles.container} >
-            <Text title='Замовлення з поля' style={styles.text}> Замовлення з поля {props.route.params.title}  </Text>
-            <FlatList              
-            data={dataFilter}
-            renderItem={renderOrders}
-            keyExtractor={item => item.id.toString()}
-            onRefresh={getOrders}
-            refreshing={isLoading}
-            
-            />            
-        
-        </SafeAreaView>
+    return (   
+             
+            <SafeAreaView style={styles.container} >
+                <Text title='Замовлення з поля' style={styles.text}> Замовлення з поля {fild} </Text>
+                <FlatList              
+                data={dataFilter}
+                renderItem={renderOrders}
+                keyExtractor={item => item.id.toString()} 
+                />
+            </SafeAreaView>        
     )
 }
 

@@ -1,18 +1,19 @@
 import React, { useState, useEffect, Component } from 'react'
-import { StyleSheet, Text, View, ScrollView, FlatList } from 'react-native'
+import { applyMiddleware, compose, legacy_createStore as createStore} from 'redux'
 import Navigate from './navigation/AppNavigator'
+import { Provider } from 'react-redux'
+import thunk from 'redux-thunk'
+import { rootReducer } from './state/rootReducer'
 
+
+const store = createStore(rootReducer, compose( applyMiddleware(thunk) ))
 
 export default function App() { 
   
   return (
-    <Navigate />
+    <Provider store={store}>
+      <Navigate />
+    </Provider>    
   )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: 30,
-    paddingVertical: 28,
-  }
-});

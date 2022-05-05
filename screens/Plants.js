@@ -1,23 +1,27 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import { Text, StyleSheet, TouchableHighlight, View, FlatList, Pressable, Modal, Alert, } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { useSelector } from 'react-redux';
 
 
 
 
 export default function PlantsScreen (props)  {
 
+    const plantOrders = useSelector(state => state.filterPlant.filterPlants)
+    
     const [isSelected, setSelection] = useState(false);
     const [modalVisible, setModalVisible] = useState(false)
+   // const {upData} = useContext(Context)
 
-    const dataOrders = props.route.params.data
+    const fild = props.route.params.title
+    const clientName = props.route.params.clientName
+
 
 
     function renderPlants ({item}) { 
-
         return (
             <TouchableHighlight
-               // onPress={() => props.navigation.navigate('Рослини',  { title: props.route.params.title, data: dataFilter })}
                 style={styles.rowFront}
                 underlayColor={'#AAA'}
             >
@@ -33,27 +37,10 @@ export default function PlantsScreen (props)  {
         )
     } 
 
-    const fild = props.route.params.title
-    const clientName = props.route.params.clientName
-
-    const plantOrders = []
     
-    dataOrders.filter(order => {     
-        if (clientName == order.nameClient) {
-            let plantPlace 
-            for (let i = 0; i < order.orderItems.length; i++) {
-                plantPlace = order.orderItems[i].placing           
-                if (plantPlace == fild ) {           
-                         plantOrders.push(order.orderItems[i])
-                    } 
-           }     
-        }
-           
-    })
-   //console.log(plantOrders)
+    
 
-
-    return (
+     return (
         <SafeAreaView style={styles.container}>    
             <Modal
                 animationType="slide"
@@ -87,7 +74,7 @@ export default function PlantsScreen (props)  {
             </Modal>  
 
 
-            <Text style={styles.text}> Замовлення {props.route.params.clientName} з поля {props.route.params.title} </Text>
+            <Text style={styles.text}> Замовлення {clientName} з поля {fild} </Text>
             <FlatList              
             data={plantOrders}
             renderItem={renderPlants}
