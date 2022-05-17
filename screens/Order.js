@@ -1,15 +1,14 @@
 import React from 'react'
 import {View, Text, StyleSheet, FlatList, TouchableHighlight} from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useDispatch, useSelector } from 'react-redux'
-import { filterPlants } from '../state/actions'
+import { useDispatch, useSelector, connect } from 'react-redux'
+import { filterOrders, filterPlants } from '../state/actions'
 
-export default function OrdersScreen  ({navigation, route}) {
+ function OrdersScreen  ({navigation, route, filterOrders}) {
     
-    const fild = route.params.title  
-    const dataFilter = useSelector(state => state.filterOrder.filterOrders)
+    const fild = route.params.title     
     const dispatch = useDispatch()
-    // console.log(dataFilter)
+     //console.log(route)
       
 
     
@@ -17,8 +16,8 @@ export default function OrdersScreen  ({navigation, route}) {
         return (           
                 <TouchableHighlight
                     onPress={() => {
-                        navigation.navigate('Рослини',  { title: fild, data: dataFilter, clientName: item.nameClient, })
-                        dispatch(filterPlants(dataFilter, fild, item.nameClient))
+                        navigation.navigate('Рослини',  { title: fild, clientName: item.nameClient, })
+                        dispatch(filterPlants(filterOrders, fild, item.nameClient))
                     }}
                     style={styles.rowFront}
                     underlayColor={'#AAA'}
@@ -40,13 +39,22 @@ export default function OrdersScreen  ({navigation, route}) {
             <SafeAreaView style={styles.container} >
                 <Text title='Замовлення з поля' style={styles.text}> Замовлення з поля {fild} </Text>
                 <FlatList              
-                data={dataFilter}
+                data={filterOrders}
                 renderItem={renderOrders}
                 keyExtractor={item => item.id.toString()} 
                 />
             </SafeAreaView>        
     )
 }
+
+const mapStateToProps = state => {
+    return {
+        filterOrders: state.filterOrder.filterOrders        
+    }
+  }
+
+export default connect(mapStateToProps, null)(OrdersScreen)
+
 
 
 const styles = StyleSheet.create({

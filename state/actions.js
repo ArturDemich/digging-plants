@@ -1,4 +1,4 @@
-import { FETCH_DATA, FILTER_ORDERS, FILTER_PLANT, HIDE_ALERT, HIDE_LOADER, SHOW_ALERT, SHOW_LOADER} from './types'
+import { CHANGE_STATUS_DIG_PLANT, FETCH_DATA, FILTER_ORDERS, FILTER_PLANT, HIDE_ALERT, HIDE_LOADER, SHOW_ALERT, SHOW_LOADER} from './types'
 
 
 export function showLoader() {
@@ -81,6 +81,7 @@ export function filterPlants(prevState, fild, name) {
           plantPlace = order.orderItems[i].placing           
           if (plantPlace == fild ) {           
             plantOrders.push(order.orderItems[i])
+            //console.log(plantOrders)
           } 
        }     
     }       
@@ -89,6 +90,23 @@ export function filterPlants(prevState, fild, name) {
     dispatch({
       type: FILTER_PLANT,
       payload: plantOrders
+    })    
+  }
+}
+
+export function changeStatusDigPlant(prevState) {
+  prevState.forEach(element => {
+    for(let i in element) {
+      if (element[i] == false) {
+        element[i] = true
+        console.log(prevState)
+      }
+    }
+  })
+  return dispatch => {
+    dispatch({
+      type: CHANGE_STATUS_DIG_PLANT,
+      payload: prevState
     })    
   }
 }

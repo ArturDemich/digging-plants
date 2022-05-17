@@ -1,21 +1,23 @@
 import React, { useState } from 'react'
 import { Text, StyleSheet, TouchableHighlight, View, FlatList, Pressable, Modal, Alert, } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector, connect } from 'react-redux';
+import { changeStatusDigPlant } from '../state/actions';
 
 
 
 
-export default function PlantsScreen (props)  {
+ function PlantsScreen ({filterPlants, route})  {
 
-    const plantOrders = useSelector(state => state.filterPlant.filterPlants)
+   // const plantOrders = useSelector(state => state.filterPlant.filterPlants)
+    const dispatch = useDispatch()
     
     const [isSelected, setSelection] = useState(false);
     const [modalVisible, setModalVisible] = useState(false)
    // const {upData} = useContext(Context)
 
-    const fild = props.route.params.title
-    const clientName = props.route.params.clientName
+    const fild = route.params.title
+    const clientName = route.params.clientName
 
 
 
@@ -29,7 +31,14 @@ export default function PlantsScreen (props)  {
                 <Text style={styles.plantName}>{item.name}</Text>           
                 <Text style={styles.characteristics}>{item.characteristics}</Text>
                 <Text style={styles.quantity}> {item.quantity}шт</Text> 
-            <TouchableHighlight style={[styles.button, isSelected === true && styles.buttonPress]} onPress={(el) => setSelection(!isSelected) } >
+            <TouchableHighlight 
+                style={[styles.button, isSelected === true && styles.buttonPress]} 
+                onPress={ (el) => {
+                    setSelection(!isSelected)
+                    dispatch(changeStatusDigPlant(filterPlants))
+                    console.log(el)
+                    }                    
+                } >
                 <Text style={styles.statusDig}  >Готово{item.statusDig}</Text> 
             </TouchableHighlight>
             </View>
@@ -76,7 +85,7 @@ export default function PlantsScreen (props)  {
 
             <Text style={styles.text}> Замовлення {clientName} з поля {fild} </Text>
             <FlatList              
-            data={plantOrders}
+            data={filterPlants}
             renderItem={renderPlants}
             keyExtractor={item => item.id.toString()}         
             
@@ -87,6 +96,18 @@ export default function PlantsScreen (props)  {
         </SafeAreaView>
     )
 }
+
+const mapStateToProps = state => {
+    return {
+        filterPlants: state.filterPlant.filterPlants        
+    }
+  }
+
+
+
+export default connect(mapStateToProps, null)(PlantsScreen)
+
+
 
 
 const styles = StyleSheet.create({
